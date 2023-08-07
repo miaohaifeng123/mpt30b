@@ -1,0 +1,77 @@
+自从今年3月openAI公布chatgpt免费试用以来，各类AIGC项目的消息不断来袭。
+近期，Anthropic也推出了Claude2免费试用服务。Claude2的中的某些团队成员来自早期的chatgpt团队，外界评价Claude2的性能与chatgpt相当。
+我一直在思考我们团队是否可以尝试下在项目中运用AIGC的技术来实现一些功能模块。
+比如在ao governance项目中使用AI来对每一个客户生成一个年度总结报告，需要relationship经理做review。
+比如上周在跟Kai讨论中，其提出的对APAC clickable项目中的每一个页面做词频提取。之后客户在选择需要的页面时，可以根据其输入关键词标签动态生成一些列页面。
+如果使用AI方案，我们
+网上有很多基于chatgpt的解决方案。但是，由于道富内部的安全策略，直接调用OPENai的api服务是不被允许的。
+所以我想通过私有化部署AIGC的预训练模型做一个测试，主要是验证道富内部可行性。
+当前暂时不针对以上场景做功能实现。
+
+当前比较评价比较搞的三个开源预训练模型是：meta的LLAMA/LLAMA2，TII的FALCON, MosaicML的MPT.
+经过一番对比考量，我选择了MPT30B + langchain + chroma 来完成一个对pdf、txt、html做文档摘要功能的项目部署。
+本来想增加继承一个前端框架chainlit，目前未测试通过，所以这次还是在后端展示。
+MPT30B是由MosaicML公司开发，发布于2023年6月22日，之前他们还发布过MPT7B。
+事实上META的LLAMA2预训练发布与2023年7月18日，各项测试结果显示这个模型也更优秀，但是我这个分享准备在7月18日之前就开始了，当时是MPT30B是最佳选择。
+
+In pre-trained models, "30B" and "7B" refer to the size of the model, typically denoting the number of parameters in the model, measured in billions.
+"30B" means the model has about 3 billion (3,000,000,000) parameters.
+"7B" means the model has about 700 million (700,000,000) parameters.
+Generally, larger models (with more parameters) may exhibit better performance and generation capabilities, but they also require more computational resources to run and train. Therefore, choosing the appropriate size of a pre-trained model depends on the specific needs of the application and the available computational resources.
+
+LangChain is a framework designed to simplify the creation of applications using large language models. As a language model integration framework, LangChain's use-cases largely overlap with those of language models in general, including document analysis and summarization, chatbots, and code analysis.
+
+chroma is an AI-native open-source embedding database.
+
+
+
+langchain 框架提供了一个Summarization的功能，官网提供的代码案例使用的是chatgpt的API实现。
+这里我们需要把chatgpt相关的模块更新成由MMP30B来实现。
+https://python.langchain.com/docs/use_cases/summarization
+
+
+在道富内网部署AIGC相关项目最大的困难，除了不能使用chatgpt这类商业化API服务外，另外巨大的困难是环境搭建：
+1，无法使用anaconda这类工具来部署应用；
+Anaconda provides a powerful package management system that allows easy installation, updating, and management of various Python libraries and dependencies. In AI projects, we often need to use many third-party libraries like NumPy, Pandas, TensorFlow, PyTorch, etc. Anaconda simplifies the process of setting up and managing these libraries, avoiding manual installations and version conflicts. Pre-compiled Optimizations: Anaconda provides pre-compiled versions of many Python libraries, optimized for different operating systems and hardware. These optimized versions can improve performance and execution efficiency.
+In summary, using Anaconda simplifies and streamlines the setup and management of AI projects, providing better environment isolation and allowing developers to focus on project implementation and functionality without worrying too much about low-level configurations and dependency management.
+2，无权直接安装需要的开发包，我是说一些编译安装python依赖包需要的开发包工具。当遇到一些困难的时候，还需要约IT团队来协助解决。这相当耗费时间和精力。
+
+为了能够顺利完成项目代码编写和部署，目前我采用的方案是先用自己的个人电脑和购买按小时收费的云服务器，在完成代码测试和运行后再迁移到道富内部电脑上。
+代码传递的中转站是github.com
+
+目前代码已经部署到workstation.
+
+
+
+
+Ever since OpenAI announced the free trial of chatgpt in March this year, news about various AIGC projects keeps pouring in. Recently, Anthropic also introduced the Claude2 free trial service. Some team members of Claude2 come from the early chatgpt team, and external evaluations suggest that Claude2's performance is comparable to chatgpt.
+
+I have been pondering whether our team can explore the application of AIGC technology to implement certain functional modules in our project. For instance, in the "ao governance" project, we could utilize AI to generate an annual summary report for each client, which the relationship manager would review. Additionally, during a recent discussion with Kai, he proposed performing word frequency extraction on each page of the "APAC clickable" project. Subsequently, when clients select the desired pages, a series of pages can be dynamically generated based on their input keyword tags. If an AI solution is employed, we...
+
+There are numerous chatgpt-based solutions available online. However, due to internal security policies at Dao Fu, direct calls to OPENai's API service are not permitted. Therefore, I am considering conducting a test by privately deploying AIGC's pre-trained models to validate the feasibility within Dao Fu. For now, we will not implement the aforementioned scenarios.
+
+Currently, three open-source pre-trained models have garnered significant attention: LLAMA/LLAMA2 by Meta, FALCON by TII, and MPT by MosaicML. After careful comparison and consideration, I have chosen MPT30B + langchain + chroma for deploying a project that performs document summarization on pdf, txt, and html files. Initially, I intended to incorporate the front-end framework chainlit; however, it has not passed testing yet, so this time we are proceeding with the back-end implementation.
+
+MPT30B was developed by MosaicML and released on June 22, 2023. Previously, they had released MPT7B. In fact, Meta's LLAMA2 pre-training was released on July 18, 2023, and test results indicated that this model is superior. However, since I planned to start this sharing before July 18, MPT30B was the best choice at that time.
+
+In pre-trained models, "30B" and "7B" refer to the size of the model, typically denoting the number of parameters in the model, measured in billions.
+"30B" means the model has about 3 billion (3,000,000,000) parameters.
+"7B" means the model has about 700 million (700,000,000) parameters.
+Generally, larger models (with more parameters) may exhibit better performance and generation capabilities, but they also require more computational resources to run and train. Therefore, choosing the appropriate size of a pre-trained model depends on the specific needs of the application and the available computational resources.
+
+LangChain is a framework designed to simplify the creation of applications using large language models. As a language model integration framework, LangChain's use-cases largely overlap with those of language models in general, including document analysis and summarization, chatbots, and code analysis.
+
+Chroma is an AI-native open-source embedding database.
+
+The LangChain framework provides a summarization function, and the code examples on the official website use the chatgpt API. In our case, we need to update the relevant modules to use MPT30B for implementation. Here is the link to the documentation for summarization: https://python.langchain.com/docs/use_cases/summarization
+
+The most significant challenges in deploying AIGC-related projects within Dao Fu's intranet are not only the restriction on using commercial API services like chatgpt but also the difficulties in setting up the environment:
+
+We cannot use tools like Anaconda to deploy applications, which provide a powerful package management system for Python libraries and dependencies. In AI projects, we often require many third-party libraries like NumPy, Pandas, TensorFlow, PyTorch, etc. Anaconda simplifies the process of setting up and managing these libraries, avoiding manual installations and version conflicts.
+We do not have direct permission to install required development packages, especially for some Python dependencies that need compilation. When facing difficulties, we need to coordinate with the IT team for assistance, which can be time-consuming and resource-intensive.
+To smoothly complete project code development and deployment, my current approach involves using my personal computer and a pay-as-you-go cloud server to test the code. After successful testing and execution, I then transfer it to Dao Fu's internal computers. GitHub serves as the intermediary for code transmission.
+
+Currently, the code has been deployed to the workstation.
+
+
+
